@@ -6034,7 +6034,7 @@ document.addEventListener('mousemove',e=>{
   if(state!=='play'||P.hidden&&false)return;
   if(locked||(useDrag&&dragging)){look(e.movementX||0,e.movementY||0,.0022);}
 });
-stage.addEventListener('mousedown',()=>{if(state==='cut')cutSkip=true;dragging=true;if(state==='play'&&!locked&&!useDrag)requestLock();});
+stage.addEventListener('mousedown',()=>{if(state==='cut')cutSkip=true;dragging=true;if(state==='play'&&!locked&&!IS_TOUCH)requestLock();});
 window.addEventListener('mouseup',()=>{dragging=false;});
 function look(dx,dy,s){
   P.yaw-=dx*s*SET.sens;P.pitch=clamp(P.pitch-dy*s*SET.sens,-1.35,1.35);
@@ -6043,6 +6043,7 @@ function look(dx,dy,s){
 function requestLock(){try{const p=stage.requestPointerLock();if(p&&p.catch)p.catch(()=>{});}catch(e){}}
 document.addEventListener('pointerlockchange',()=>{
   locked=document.pointerLockElement===stage;
+  if(locked)useDrag=false;
   if(!locked&&state==='play'&&!useDrag&&!IS_TOUCH)pauseGame();
 });
 function toggleFlash(){return;
@@ -7379,7 +7380,7 @@ function startGame(skipCut){
   if(IS_TOUCH){useDrag=false;}
   else{
     requestLock();
-    setTimeout(()=>{if((state==='play'||state==='cut')&&!locked){useDrag=true;toast('Pointer lock unavailable. Click and drag to look.',3500);}},400);
+    setTimeout(()=>{if((state==='play'||state==='cut')&&!locked){useDrag=true;toast('Click the game to lock the mouse.',3500);}},400);
   }
   
   if(AU.ok){AU.alarm.gain.setTargetAtTime(0,AU.ctx.currentTime,.05);}
